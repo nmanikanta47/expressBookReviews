@@ -30,6 +30,20 @@ public_users.get('/',function (req, res) {
   return res.send(JSON.stringify(books, null, 4));
 });
 
+//Get all books using Async callbacks
+public_users.get("/asyncbooks", async function (req,res) {
+  try {
+    let response = await axios.get("http://localhost:5005/");
+    console.log(response.data);
+    return res.status(200).json(response.data);
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Error getting book list"});
+  }
+});
+
+
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     if (req.params.isbn) {
@@ -41,6 +55,20 @@ public_users.get('/isbn/:isbn',function (req, res) {
         }
     }
  });
+
+  //Get book details by ISBN using Promises
+  public_users.get("/asyncbooks/isbn/:isbn", function (req,res) {
+    let {isbn} = req.params;
+    axios.get(`http://localhost:5005/isbn/${isbn}`)
+    .then(function(response){
+      console.log(response.data);
+      return res.status(200).json(response.data);
+    })
+    .catch(function(error){
+        console.log(error);
+        return res.status(500).json({message: "Error while fetching book details."})
+    })
+  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
@@ -62,6 +90,20 @@ public_users.get('/author/:author',function (req, res) {
     }
 });
 
+//Get book details by author using promises
+public_users.get("/asyncbooks/author/:author", function (req,res) {
+    let {author} = req.params;
+    axios.get(`http://localhost:5005/author/${author}`)
+    .then(function(response){
+      console.log(response.data);
+      return res.status(200).json(response.data);
+    })
+    .catch(function(error){
+        console.log(error);
+        return res.status(500).json({message: "Error while fetching book details."})
+    })
+  });
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
     if (req.params.title) {
@@ -81,6 +123,20 @@ public_users.get('/title/:title',function (req, res) {
         }
     }
 });
+
+//Get all books based on title using promises
+public_users.get("/asyncbooks/title/:title", function (req,res) {
+    let {title} = req.params;
+    axios.get(`http://localhost:5005/title/${title}`)
+    .then(function(response){
+      console.log(response.data);
+      return res.status(200).json(response.data);
+    })
+    .catch(function(error){
+        console.log(error);
+        return res.status(500).json({message: "Error while fetching book details."})
+    })
+  });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
